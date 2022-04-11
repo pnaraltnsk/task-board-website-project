@@ -1,0 +1,6 @@
+indexes:
+- kind: UserInfo
+  ancestor: yes
+  properties:
+  - name: email
+  - name: board_list

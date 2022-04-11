@@ -1,0 +1,6 @@
+Flask==2.1.1
+google-cloud-datastore==2.5.1
+pip==22.0.4
+setuptools==62.1.0
+google-auth==2.6.3
+requests==2.27.1

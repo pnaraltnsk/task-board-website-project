@@ -1,0 +1,215 @@
+body {
+ font-family: "helvetica", sans-serif;
+ text-align: center;
+ height: 100%;
+ margin: 0px;
+ background-image: url("https://www.power-technology.com/wp-content/uploads/sites/21/2021/09/shutterstock_1864450102-scaled.jpg");
+ background-repeat: no-repeat;
+ background-size: cover;
+ background-position: 80% 20%;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid #ddd;
+  background: #FFFFFF;
+}
+
+/* Style table headers and table data */
+th, td {
+  text-align: center;
+  padding: 16px;
+}
+
+th:first-child, td:first-child {
+  text-align: left;
+}
+
+/* Zebra-striped table rows */
+tr:nth-child(even) {
+  background-color: #f2f2f2
+}
+
+.fa-check {
+  color: green;
+}
+
+.fa-remove {
+  color: red;
+}
+
+/* CSS for view-all-vehicles button*/
+a.button-1 {
+
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+  border-radius: 6px;
+  border: none;
+
+  color: #fff;
+  background-origin: border-box;
+  box-shadow: 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-10:focus {
+  box-shadow: inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
+  outline: 0;
+}
+
+.evform{
+    width: 150px;
+    display: inline-block;
+
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.centerItems{
+    padding: 30px;
+    align: center;
+    margin: auto;
+    background-color: #FFFFFF;
+    width: 400px;
+
+
+}
+
+.colorr{
+    color: #FFFFFF;
+}
+.evform1{
+    width: auto;
+    display: inline-block;
+    font-size: 12px;
+
+}
+
+.evforminput{
+    width: 110px;
+    text-align: center;
+
+}
+
+.cardSearch{
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  border-radius: 5px;
+  background-color: #FFFFFF;
+  padding: 10px;
+  margin: 10px;
+  text-align: left;
+}
+
+/* Add shadows to create the "card" effect */
+.card{
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  background-color: #FFFFFF;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px;
+  text-align: left;
+}
+
+/* On mouse-over, add a deeper shadow */
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+/* Add some padding inside the card container */
+.container {
+  padding: 2px 16px;
+}
+
+.btn1{
+  margin-left: 0px;
+  margin-top: 0px;
+  font-size: 14px;
+  width: 100px;
+  padding: 1px;
+  float: right;
+  border-radius: 5px;
+  background-color: #66CDAA;
+  border-radius: 6px;
+  border: none;
+  touch-action: manipulation;
+  color: #fff;
+  background-origin: border-box;
+
+}
+
+.btnCompare{
+  font-size: 14px;
+  align: center;
+  width: 100px;
+  padding: 6px;
+  margin: 10px;
+  border-radius: 5px;
+  background-color: #66CDAA;
+  border-radius: 6px;
+  border: none;
+  touch-action: manipulation;
+  color: #fff;
+  background-origin: border-box;
+
+}
+
+/* Add a black background color to the top navigation */
+.topnav {
+  background-color: #333;
+  overflow: hidden;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+  background-color: #66CDAA;
+  color: white;
+}
+
+/* The alert message box */
+.alert {
+  padding: 20px;
+  background-color: #f44336; /* Red */
+  color: white;
+  margin-bottom: 15px;
+}
+
+/* The close button */
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* When moving the mouse over the close button */
+.closebtn:hover {
+  color: black;
+}

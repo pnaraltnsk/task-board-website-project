@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+
+<!-- <script src="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.js"></script>
+<link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.css" /> -->
+<script src="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.js"></script>
+<link type="text/css" rel="stylesheet"
+href="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.css" />
+
+
+ <title>Datastore and Firebase Auth Example</title>
+ <script src="{{ url_for('static', filename='script.js') }}"></script>
+ <link type="text/css" rel="stylesheet" href="{{ url_for('static',
+filename='style.css') }}">
+</head>
+<body>
+ <div class="topnav">
+
+
+
+   <a id="sign-out" hidden="true">Sign out</a>
+   <a id="sign-in" hidden="false">Sign in</a>
+ </div>
+
+
+
+ <h1 class="colorr">Task Board</h1>
+
+
+ <div id="firebase-auth-container"></div>
+
+
+
+
+   <div id="login-info" hidden="true">
+
+        {% if user_data %}
+            {{user_data}}
+        {% elif error_message %}
+           <p>Error Message: {{ error_message }}</p>
+        {% endif %}
+
+
+
+
+
+ </div>
+
+
+ <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-auth.js"></script>
+ <script src="{{ url_for('static', filename='app-setup.js') }}"></script>
+
+</body>
+
+</html>

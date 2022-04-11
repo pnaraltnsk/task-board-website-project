@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+
+    <!-- <script src="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.css" /> -->
+    <script src="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet"
+    href="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.css" />
+
+  <title>Datastore and Firebase Auth Example</title>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static',
+  filename='style.css') }}">
+
+</head>
+<body>
+ <div class="topnav">
+
+     <a id="sign-in" hidden="false">Sign in</a>
+     <a id="sign-out" hidden="true">Sign out</a>
+ </div>
+
+
+    <div class="centerItems">
+        <form action="/create_board" method="post">
+         <label class="evform" for="evname"> Name of Board: </label> <input class="evforminput" id="evname" type="text" value="" name="board_name" required/><br/>
+
+         <input type="submit" class="btnCompare" value="CREATE" name="submit_button"/>
+        </form>
+    </div>
+
+    {% if add==False %}
+    <div class="alert">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        This board name already exists! Try something else.
+    </div>
+    {% endif %}
+
+
+    <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-auth.js"></script>
+    <script src="{{ url_for('static', filename='app-setup.js') }}"></script>
+</body>
+
+</html>

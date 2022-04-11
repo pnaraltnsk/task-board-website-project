@@ -19,8 +19,11 @@ filename='style.css') }}">
 
 
 
-   <a id="sign-out" hidden="true">Sign out</a>
-   <a id="sign-in" hidden="false">Sign in</a>
+     <a id="sign-out" hidden="true">Sign out</a>
+     <a id="sign-in" hidden="false">Sign in</a>
+     {% if user_data %}
+        <a id="addboard" href="{{ url_for('createBoardPage')}}">CREATE BOARD</a>
+     {% endif %}
  </div>
 
 
@@ -33,19 +36,23 @@ filename='style.css') }}">
 
 
 
-   <div id="login-info" hidden="true">
+   <div id="login-info">
 
         {% if user_data %}
-            {{user_data}}
+            {% if boards != None %}
+                {% for b in boards %}
+                    <div class="card">
+                        Board:{{ b.board_name }}<br/>
+                        Creator:{{ b.creator_name }}<br/>
+
+                    </div>
+                {% endfor %}
+            {% endif %}
         {% elif error_message %}
            <p>Error Message: {{ error_message }}</p>
         {% endif %}
 
-
-
-
-
- </div>
+   </div>
 
 
  <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>

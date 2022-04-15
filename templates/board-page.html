@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+
+<!-- <script src="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.js"></script>
+<link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.css" /> -->
+<script src="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.js"></script>
+<link type="text/css" rel="stylesheet"
+href="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.css" />
+
+
+ <title>Datastore and Firebase Auth Example</title>
+ <script src="{{ url_for('static', filename='script.js') }}"></script>
+ <link type="text/css" rel="stylesheet" href="{{ url_for('static',
+filename='style.css') }}">
+</head>
+<body>
+ <div class="topnav">
+
+
+     <a id="home" href="{{ url_for('home')}}" >HOME</a>
+    <a id="sign-in" hidden="false">SIGN IN</a>
+     {% if user_data.email == result.email %}
+        <a id="addtask1" href="{{ url_for('addtask_page', id = result.id)}}">ADD TASK</a>
+        <a id="addUser" href="{{ url_for('addUser_page', id = result.id)}}">INVITE USER</a>
+     {% endif %}
+     {% for user in result.invited_users %}
+         {% if user_data.email==user %}
+            <a id="addtask" href="{{ url_for('addtask_page', id = result.id)}}">ADD TASK</a>
+         {% endif %}
+     {% endfor %}
+     <a id="sign-out" hidden="true">SIGN OUT</a>
+ </div>
+
+
+
+ <div id="firebase-auth-container"></div>
+
+ <h1 class="colorr">{{result.board_name}}</h1>
+ <h2 class="colorr">Creator:{{result.creator_name}}</h2>
+
+ {%if result.invited_users!= None %}
+    <div class="card">
+        Participant users:</br>
+        {% for user in result.invited_users %}
+            {{user}}</br>
+        {% endfor %}
+    </div>
+ {% endif %}
+
+{%if not board_tasks %}
+        EMPTY
+ {% endif %}
+
+{%if board_tasks %}
+ <div class="card">
+     TASKS:
+     <form action="/complete_tasks/{{id}}" method="post">
+        <table>
+            {% for task in board_tasks %}
+                {% if task.statue==0 %}
+                <tr>
+
+                    <td>{{task.task_name}}</td>
+                    <td>{{task.deadline}}</td>
+                    <td>Assigned to:{{task.assigned_user}}</td>
+
+                    <td><input type="checkbox" value={{task.id}} name="checkboxes"></td>
+
+
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+        <input type="submit" class="btnCompare" value="CHECK">
+    </form>
+ </div>
+ <div class="card">
+     COMPLETED TASKS:
+        <table>
+            {% for task in board_tasks %}
+                {% if task.statue!=0 %}
+                <tr>
+                    <td>{{task.task_name}}</td>
+                    <td>{{task.deadline}}</td>
+                    <td>Assigned to:{{task.assigned_user}}</td>
+                    <td>Completed on: {{task.finish_date}}</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+
+ </div>
+ {% endif %}
+
+
+
+
+
+
+
+
+
+
+ <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-auth.js"></script>
+ <script src="{{ url_for('static', filename='app-setup.js') }}"></script>
+
+</body>
+
+</html>

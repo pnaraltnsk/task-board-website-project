@@ -23,6 +23,7 @@ filename='style.css') }}">
      <a id="sign-in" hidden="false">Sign in</a>
      {% if user_data %}
         <a id="addboard" href="{{ url_for('createBoardPage')}}">CREATE BOARD</a>
+     <p style="float:right;color:#FFFFFF;">Welcome {{user_data.name}}! </p>
      {% endif %}
 
  </div>

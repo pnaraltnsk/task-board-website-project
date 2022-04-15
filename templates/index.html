@@ -24,6 +24,7 @@ filename='style.css') }}">
      {% if user_data %}
         <a id="addboard" href="{{ url_for('createBoardPage')}}">CREATE BOARD</a>
      {% endif %}
+
  </div>
 
 
@@ -36,7 +37,7 @@ filename='style.css') }}">
 
 
 
-   <div id="login-info">
+   <div>
 
         {% if user_data %}
             {% if boards != None %}
@@ -44,7 +45,8 @@ filename='style.css') }}">
                     <div class="card">
                         Board:{{ b.board_name }}<br/>
                         Creator:{{ b.creator_name }}<br/>
-
+                        <button type="button" class="btn1" onclick="window.location.href='{{ url_for( 'board_page' , id = b.id) }}'">OPEN BOARD</button>
+                        <br/>
                     </div>
                 {% endfor %}
             {% endif %}

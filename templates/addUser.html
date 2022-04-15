@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+
+    <!-- <script src="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.css" /> -->
+    <script src="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet"
+    href="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.css" />
+
+  <title>Datastore and Firebase Auth Example</title>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static',
+  filename='style.css') }}">
+
+</head>
+<body>
+ <div class="topnav">
+
+     <a id="sign-in" hidden="false">Sign in</a>
+     <a id="sign-out" hidden="true">Sign out</a>
+ </div>
+
+
+    {%if users!= None %}
+ <h3>USER LIST:</h3>
+    <form action="/invite_users/{{id}}" method="post">
+        <table>
+            {% for user in users %}
+                {% if user.email!= user_data.email%}
+                <tr>
+
+                    <td>{{user.name}}</td>
+                    <td>{{user.email}}</td>
+                    <td><input type="checkbox" value={{user.email}} name="checkboxes"></td>
+
+
+                </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+        <input type="submit" class="btnCompare" value="INVITE">
+    </form>
+ {% endif %}
+
+    {% if add==False %}
+    <div class="alert">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        Select users that are not already invited!
+    </div>
+    {% endif %}
+
+
+    <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-auth.js"></script>
+    <script src="{{ url_for('static', filename='app-setup.js') }}"></script>
+</body>
+
+</html>

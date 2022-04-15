@@ -21,12 +21,15 @@ filename='style.css') }}">
      <a id="home" href="{{ url_for('home')}}" >HOME</a>
     <a id="sign-in" hidden="false">SIGN IN</a>
      {% if user_data.email == result.email %}
-        <a id="addtask1" href="{{ url_for('addtask_page', id = result.id)}}">ADD TASK</a>
-        <a id="addUser" href="{{ url_for('addUser_page', id = result.id)}}">INVITE USER</a>
+        <a id="addtask1" href="{{ url_for('addtask_page', id = id)}}">ADD TASK</a>
+        <a id="addUser" href="{{ url_for('addUser_page', id = id)}}">INVITE USER</a>
+     {% endif %}
+     {% if user_data%}
+        <p style="float:right;color:#FFFFFF;"> User: {{user_data.name}} </p>
      {% endif %}
      {% for user in result.invited_users %}
          {% if user_data.email==user %}
-            <a id="addtask" href="{{ url_for('addtask_page', id = result.id)}}">ADD TASK</a>
+            <a id="addtask" href="{{ url_for('addtask_page', id = id)}}">ADD TASK</a>
          {% endif %}
      {% endfor %}
      <a id="sign-out" hidden="true">SIGN OUT</a>
@@ -52,7 +55,7 @@ filename='style.css') }}">
         EMPTY
  {% endif %}
 
-{%if board_tasks %}
+{%if uncompleted_tasks %}
  <div class="card">
      TASKS:
      <form action="/complete_tasks/{{id}}" method="post">
@@ -71,10 +74,25 @@ filename='style.css') }}">
                     {% endif %}
                 </tr>
             {% endfor %}
+
         </table>
         <input type="submit" class="btnCompare" value="CHECK">
     </form>
+     {% if add==1 %}
+    <div class="alert">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        Select only one task to check complete!
+    </div>
+    {% endif %}
+     {% if add==2 %}
+    <div class="alert">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        Please only check tasks that you are assigned to!
+    </div>
+    {% endif %}
  </div>
+  {% endif %}
+ {% if board_tasks %}
  <div class="card">
      COMPLETED TASKS:
         <table>
@@ -91,7 +109,7 @@ filename='style.css') }}">
         </table>
 
  </div>
- {% endif %}
+{% endif %}
 
 
 

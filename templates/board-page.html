@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 <head>
 
 <!-- <script src="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.js"></script>
@@ -8,7 +8,7 @@
 <link type="text/css" rel="stylesheet"
 href="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.css" />
 
-
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
  <title>Datastore and Firebase Auth Example</title>
  <script src="{{ url_for('static', filename='script.js') }}"></script>
  <link type="text/css" rel="stylesheet" href="{{ url_for('static',
@@ -39,8 +39,15 @@ filename='style.css') }}">
 
  <div id="firebase-auth-container"></div>
 
- <h1 class="colorr">{{result.board_name}}</h1>
- <h2 class="colorr">Creator:{{result.creator_name}}</h2>
+ <div style="padding:5px;font-size:40px;color:#FFFFFF;">{{result.board_name}}
+ <button style="padding:0px;margin:2px;"><i style="font-size:20px;" class="material-icons">edit</i></button>
+
+ </div>
+ <div style="font-size:20px;color:#FFFFFF;">Creator:{{result.creator_name}}
+
+</div>
+
+
 
  {%if result.invited_users!= None %}
     <div class="card">
@@ -57,20 +64,30 @@ filename='style.css') }}">
 
 {%if uncompleted_tasks %}
  <div class="card">
-     TASKS:
+     <table>
+         <tr>Tasks To Be Done</tr>
+     <tr>
+
+        <td style="width:30%">Task:</td>
+        <td style="width:20%">Deadline:</td>
+        <td style="width:30%">Assigned User:</td>
+         <td></td><td></td>
+
+    </tr>
+    </table>
      <form action="/complete_tasks/{{id}}" method="post">
         <table>
             {% for task in board_tasks %}
                 {% if task.statue==0 %}
                 <tr>
 
-                    <td>{{task.task_name}}</td>
-                    <td>{{task.deadline}}</td>
-                    <td>Assigned to:{{task.assigned_user}}</td>
+                    <td style="width:30%">{{task.task_name}}</td>
+                    <td style="width:20%">{{task.deadline}}</td>
+                    <td style="width:30%">{{task.assigned_user}}</td>
 
                     <td><input type="checkbox" value={{task.id}} name="checkboxes"></td>
-
-
+                    <td ><button style="padding:0px;" onclick="window.location.href='{{ url_for ( 'edit_task_page' , id = task.id ) }}'"><i style="font-size:20px;" class="material-icons">edit</i></button>
+                    <button style="padding:0px;" onclick="window.location.href='{{ url_for ( 'delete_task' , id = task.id, board_id=id ) }}'"><i style="font-size:20px;" class="material-icons">delete</i></button></td>
                     {% endif %}
                 </tr>
             {% endfor %}
@@ -94,15 +111,24 @@ filename='style.css') }}">
   {% endif %}
  {% if board_tasks %}
  <div class="card">
-     COMPLETED TASKS:
+     <table>
+         <tr>Completed Tasks</tr>
+     <tr>
+
+        <td style="width:30%">Tasks:</td>
+
+        <td style="width:40%">Assigned User:</td>
+         <td style="width:30%">Complete Date:</td>
+
+    </tr>
+    </table>
         <table>
             {% for task in board_tasks %}
                 {% if task.statue!=0 %}
                 <tr>
-                    <td>{{task.task_name}}</td>
-                    <td>{{task.deadline}}</td>
-                    <td>Assigned to:{{task.assigned_user}}</td>
-                    <td>Completed on: {{task.finish_date}}</td>
+                    <td style="width:30%">{{task.task_name}}</td>
+                    <td style="width:40%">{{task.assigned_user}}</td>
+                    <td style="width:30%">{{task.finish_date}}</td>
                     {% endif %}
                 </tr>
             {% endfor %}

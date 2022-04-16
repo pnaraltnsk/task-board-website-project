@@ -1,10 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+
+    <!-- <script src="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.css" /> -->
+    <script src="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet"
+    href="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.css" />
+
+  <title>Datastore and Firebase Auth Example</title>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static',
+  filename='style.css') }}">
+
 </head>
 <body>
+ <div class="topnav">
 
+     <a id="home" href="{{ url_for('home')}}" >HOME</a>
+ </div>
+
+  <h1 class="colorr">Edit Task</h1>
+
+    <div >
+        <form action="/edit_task/{{id}}" method="post">
+        <table>
+         <tr><td> Task: </td> <td><input class="evforminput" id="evname" type="text" value="" name="name" required/></td></tr>
+         <tr><td>Deadline: </td> <td><input  class="evforminput" id="evdue" type="date" value="" name="deadline" required/></td></tr>
+            <tr><input type="hidden" id="board_id" name="board_id" value={{board_id}} /></tr>
+        </table>
+         <table>
+            {% for user in users %}
+                <tr>
+
+                    <td>{{user}}</td>
+                    <td><input type="checkbox" value={{user}} name="checkboxtask"></td>
+
+
+                </tr>
+            {% endfor %}
+        </table>
+        <input type="submit" class="btnCompare" value="EDIT TASK" name="submit_button"/>
+        </form>
+    </div>
+
+    {% if add==1 %}
+    <div class="alert">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        Please fill in necessary inputs and select only one user!
+    </div>
+    {% endif %}
+    {% if add==2 %}
+    <div class="alert">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        You can't select a past date. Please select a proper date!
+    </div>
+    {% endif %}
+
+
+    <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-auth.js"></script>
+    <script src="{{ url_for('static', filename='app-setup.js') }}"></script>
 </body>
+
 </html>

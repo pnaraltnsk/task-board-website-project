@@ -76,6 +76,32 @@ def retrieveTasks(board_info):
     return task_list
 
 
+def deleteTask(board, id):
+
+    entity_key = datastore_client.key('Tasks', id)
+    datastore_client.delete(entity_key)
+    task_ids = board['task_list']
+    task_ids.remove(id)
+    board.update({
+        'task_list': task_ids
+    })
+    datastore_client.put(board)
+
+
+def editTask( claims,id, assigned_user, deadline, email, task_name):
+    entity_key = datastore_client.key('Tasks', id)
+    entity = datastore_client.get(entity_key)
+
+    entity.update({
+        'assigned_user': assigned_user,
+        'deadline': deadline,
+        'email': claims['email'],
+        'task_name': task_name
+
+    })
+    datastore_client.put(entity)
+
+
 def addTaskToBoard(board_info, id):
     print(board_info)
     task_keys = board_info['task_list']
@@ -188,7 +214,7 @@ def addtask_page(id):
 
         except ValueError as exc:
             error_message = str(exc)
-    return render_template('addTask.html', user_data=claims, users=users, error_message=error_message, id=id, add=True)
+    return render_template('addTask.html', user_data=claims, users=users, error_message=error_message, id=id, add=0)
 
 
 @app.route('/add_task/<int:id>', methods=['POST'])
@@ -215,8 +241,15 @@ def addTask(id):
             if len(chckbx)!=1:
                 invited_users.append(entity['email'])
                 return render_template('addTask.html', users=invited_users, user_data=claims,
-                                       error_message=error_message, id=id, add=False)
+                                       error_message=error_message, id=id, add=1)
 
+            datenow = datetime.datetime.now().date()
+            selected_date = datetime.datetime.strptime(request.form['deadline'], '%Y-%m-%d')
+
+            if datenow > selected_date.date():
+                invited_users.append(entity['email'])
+                return render_template('addTask.html', users=invited_users, user_data=claims,
+                                       error_message=error_message, id=id, add=2)
             task_id = createTask(claims, id, request.form['name'], request.form['deadline'], chckbx[0], 0)
 
             tasks = entity['task_list']
@@ -231,6 +264,94 @@ def addTask(id):
         except ValueError as exc:
             error_message = str(exc)
     return render_template('board-page.html', user_data=claims, board_tasks=board_tasks, uncompleted_tasks=uncompleted_tasks, result=result, id=id, add=0)
+
+
+@app.route('/delete_task/<int:id>/<int:board_id>')
+def delete_task(id, board_id):
+    id_token = request.cookies.get("token")
+    error_message = None
+    tasks = None
+    board_tasks = []
+    uncompleted_tasks = []
+    if id_token:
+        try:
+            claims = google.oauth2.id_token.verify_firebase_token(id_token,
+                                                                  firebase_request_adapter)
+            entity_key = datastore_client.key('Board', board_id)
+            entity = datastore_client.get(entity_key)
+            deleteTask(entity, id)
+            result = datastore_client.get(entity_key)
+            board_tasks = retrieveTasks(result)
+            uncompleted_tasks = retrieveUncompletedTasks(board_tasks)
+        except ValueError as exc:
+            error_message = str(exc)
+    return render_template('board-page.html', user_data=claims, board_tasks=board_tasks, uncompleted_tasks=uncompleted_tasks, result=result, id=board_id, add=0)
+
+
+@app.route('/edit_task_page/<int:id>/<int:board_id>')
+def edit_task_page(id, board_id):
+    id_token = request.cookies.get("token")
+    claims = None
+    error_message = None
+
+    users = None
+    if id_token:
+        try:
+            claims = google.oauth2.id_token.verify_firebase_token(id_token,
+                                                                  firebase_request_adapter)
+            entity_key = datastore_client.key('Board', id)
+            entity = datastore_client.get(entity_key)
+            users = entity['invited_users']
+            users.append(entity['email'])
+
+        except ValueError as exc:
+            error_message = str(exc)
+    return render_template('editTask.html', user_data=claims, users=users, error_message=error_message, id=id, add=0)
+
+
+@app.route('/edit_task/<int:id>/<int:board_id>')
+def edit_task(id, board_id):
+    id_token = request.cookies.get("token")
+    error_message = None
+    tasks = None
+    board_tasks = []
+    uncompleted_tasks = []
+    if id_token:
+        try:
+            claims = google.oauth2.id_token.verify_firebase_token(id_token,
+                                                                  firebase_request_adapter)
+            entity_key = datastore_client.key('Board', board_id)
+            entity = datastore_client.get(entity_key)
+
+            result = datastore_client.get(entity_key)
+            editTask(claims, id,)
+            board_tasks = retrieveTasks(result)
+            uncompleted_tasks = retrieveUncompletedTasks(board_tasks)
+        except ValueError as exc:
+            error_message = str(exc)
+    return render_template('board-page.html', user_data=claims, board_tasks=board_tasks, uncompleted_tasks=uncompleted_tasks, result=result, id=board_id, add=0)
+
+
+@app.route('/edit_task/<int:id>/<int:board_id>', methods=['POST'])
+def edit_task(id, board_id):
+    id_token = request.cookies.get("token")
+    error_message = None
+    tasks = None
+    board_tasks = []
+    uncompleted_tasks = []
+    if id_token:
+        try:
+            claims = google.oauth2.id_token.verify_firebase_token(id_token,
+                                                                  firebase_request_adapter)
+            entity_key = datastore_client.key('Board', board_id)
+            entity = datastore_client.get(entity_key)
+            editTask(entity, id)
+            result = datastore_client.get(entity_key)
+            board_tasks = retrieveTasks(result)
+            uncompleted_tasks = retrieveUncompletedTasks(board_tasks)
+        except ValueError as exc:
+            error_message = str(exc)
+    return render_template('board-page.html', user_data=claims, board_tasks=board_tasks, uncompleted_tasks=uncompleted_tasks, result=result, id=board_id, add=0)
 
 
 @app.route('/complete_tasks/<int:id>', methods=['POST'])

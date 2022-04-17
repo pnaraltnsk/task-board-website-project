@@ -9,7 +9,8 @@ import os
 
 from werkzeug.utils import redirect
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="C:/Users/pnral/AppData/Local/Google/Cloud SDK/Assignment2/assignment2-346918-448cc0bc3739.json "
+os.environ[
+    "GOOGLE_APPLICATION_CREDENTIALS"] = "C:/Users/pnral/AppData/Local/Google/Cloud SDK/Assignment2/assignment2-346918-448cc0bc3739.json "
 
 app = Flask(__name__)
 
@@ -52,7 +53,7 @@ def createBoard(claims, boardName):
 
 def createTask(claims, board_id, name, due_date, user, finish_date):
     id = random.getrandbits(63)
-    #board_key = datastore_client.key('Board', board_id)
+    # board_key = datastore_client.key('Board', board_id)
     entity_key = datastore_client.key('Tasks', id)
     entity = datastore.Entity(key=entity_key)
     entity.update({
@@ -77,7 +78,6 @@ def retrieveTasks(board_info):
 
 
 def deleteTask(board, id):
-
     entity_key = datastore_client.key('Tasks', id)
     datastore_client.delete(entity_key)
     task_ids = board['task_list']
@@ -88,7 +88,7 @@ def deleteTask(board, id):
     datastore_client.put(board)
 
 
-def editTask( claims,id, assigned_user, deadline, task_name):
+def editTask(claims, id, assigned_user, deadline, task_name):
     entity_key = datastore_client.key('Tasks', id)
     entity = datastore_client.get(entity_key)
 
@@ -193,7 +193,7 @@ def addUser_page(id):
                                                                   firebase_request_adapter)
         except ValueError as exc:
             error_message = str(exc)
-    return render_template('addUser.html', users=users, user_data=claims, error_message=error_message, id=id, add=True)
+    return render_template('addUser.html', users=users, user_data=claims, error_message=error_message, id=id, add=0)
 
 
 @app.route('/add_task/<int:id>')
@@ -238,7 +238,15 @@ def addTask(id):
             entity = datastore_client.get(entity_key)
             invited_users = entity['invited_users']
 
-            if len(chckbx)!=1:
+            for task_idd in entity['task_list']:
+                t_key = datastore_client.key('Tasks', task_idd)
+                tt = datastore_client.get(t_key)
+                if tt['task_name'] == request.form['name']:
+                    invited_users.append(entity['email'])
+                    return render_template('addTask.html', users=invited_users, user_data=claims,
+                                           error_message=error_message, id=id, add=4)
+
+            if len(chckbx) != 1:
                 invited_users.append(entity['email'])
                 return render_template('addTask.html', users=invited_users, user_data=claims,
                                        error_message=error_message, id=id, add=1)
@@ -263,9 +271,101 @@ def addTask(id):
             uncompleted_tasks = retrieveUncompletedTasks(board_tasks)
         except ValueError as exc:
             error_message = str(exc)
-    return render_template('board-page.html', user_data=claims, board_tasks=board_tasks, uncompleted_tasks=uncompleted_tasks, result=result, id=id, add=0)
+    return render_template('board-page.html', user_data=claims, board_tasks=board_tasks,
+                           uncompleted_tasks=uncompleted_tasks, result=result, id=id, add=0)
 
 
+@app.route('/remove_users/<int:id>', methods=['POST'])
+def remove_users(id):
+    id_token = request.cookies.get("token")
+    claims = None
+    boards = None
+    invited_users = None
+    board_tasks = None
+    result = None
+    uncompleted_tasks = None
+    error_message = None
+    users = None
+    if id_token:
+        try:
+            claims = google.oauth2.id_token.verify_firebase_token(id_token,
+                                                                  firebase_request_adapter)
+            users = retrieve_all_users()
+            entity_key = datastore_client.key('Board', id)
+            entity = datastore_client.get(entity_key)
+            invited_users = entity['invited_users']
+            board_tasks = retrieveTasks(entity)
+            uncompleted_tasks = retrieveUncompletedTasks(board_tasks)
+            chckbx = request.form.getlist('checkboxp')
+            if len(chckbx) != 1:
+
+                return render_template('board-page.html', user_data=claims, board_tasks=board_tasks,
+                                       uncompleted_tasks=uncompleted_tasks, result=entity, id=id, add=3)
+            invited_users.remove(chckbx[0])
+            entity.update({
+                'invited_users': invited_users
+            })
+            datastore_client.put(entity)
+            for tasks in entity['task_list']:
+                task_key = datastore_client.key('Tasks', tasks)
+                task = datastore_client.get(task_key)
+                if task['assigned_user'] == chckbx[0]:
+                    task.update({
+                        'assigned_user': ""
+                    })
+                    datastore_client.put(task)
+            print("----", chckbx[0])
+            user_key = datastore_client.key('UserInfo', chckbx[0])
+            user = datastore_client.get(user_key)
+            print(user,"----", chckbx[0])
+            board = user['board_list']
+            board.remove(id)
+            user.update({
+                'board_list': board
+            })
+
+            datastore_client.put(user)
+            result = datastore_client.get(entity_key)
+            board_tasks = retrieveTasks(result)
+            uncompleted_tasks = retrieveUncompletedTasks(board_tasks)
+
+        except ValueError as exc:
+            error_message = str(exc)
+    return render_template('board-page.html', user_data=claims, board_tasks=board_tasks,
+                           uncompleted_tasks=uncompleted_tasks, result=result, id=id, add=0)
+
+
+@app.route('/editname_page/<int:board_id>')
+def editname_page(board_id):
+    return render_template('edit-boardname.html', board_id=board_id, add=True)
+
+
+@app.route('/edit_bname/<int:board_id>', methods=['POST'])
+def edit_bname(board_id):
+    id_token = request.cookies.get("token")
+    claims = None
+    boards = None
+    error_message = None
+    user_info = None
+    if id_token:
+        try:
+            claims = google.oauth2.id_token.verify_firebase_token(id_token,
+                                                                  firebase_request_adapter)
+            entity_key = datastore_client.key('Board', board_id)
+            entity = datastore_client.get(entity_key)
+            board_name = request.form['board_name']
+            entity.update({
+                'board_name': board_name
+            })
+            datastore_client.put(entity)
+            result = datastore_client.get(entity_key)
+            board_tasks = retrieveTasks(result)
+            uncompleted_tasks = retrieveUncompletedTasks(board_tasks)
+
+        except ValueError as exc:
+            error_message = str(exc)
+    return render_template('board-page.html', user_data=claims, board_tasks=board_tasks,
+                           uncompleted_tasks=uncompleted_tasks, result=result, id=board_id, add=0)
 
 
 @app.route('/delete_task/<int:id>/<int:board_id>')
@@ -287,7 +387,8 @@ def delete_task(id, board_id):
             uncompleted_tasks = retrieveUncompletedTasks(board_tasks)
         except ValueError as exc:
             error_message = str(exc)
-    return render_template('board-page.html', user_data=claims, board_tasks=board_tasks, uncompleted_tasks=uncompleted_tasks, result=result, id=board_id, add=0)
+    return render_template('board-page.html', user_data=claims, board_tasks=board_tasks,
+                           uncompleted_tasks=uncompleted_tasks, result=result, id=board_id, add=0)
 
 
 @app.route('/edit_task_page/<int:id>/<int:board_id>')
@@ -308,7 +409,7 @@ def edit_task_page(id, board_id):
             print(id, "----", board_id)
         except ValueError as exc:
             error_message = str(exc)
-    return render_template('editTask.html', user_data=claims, users=users, error_message=error_message,id=id,
+    return render_template('editTask.html', user_data=claims, users=users, error_message=error_message, id=id,
                            board_id=board_id, add=0)
 
 
@@ -330,9 +431,8 @@ def edit_task(id):
                                                                   firebase_request_adapter)
             board_id = int(request.form['board_id'])
             print(id, "----", board_id)
-            entity_key = datastore_client.key('Board',  board_id)
+            entity_key = datastore_client.key('Board', board_id)
             entity = datastore_client.get(entity_key)
-
 
             invited_users = entity['invited_users']
             chckbx = request.form.getlist('checkboxtask')
@@ -355,7 +455,8 @@ def edit_task(id):
             uncompleted_tasks = retrieveUncompletedTasks(board_tasks)
         except ValueError as exc:
             error_message = str(exc)
-    return render_template('board-page.html', user_data=claims, board_tasks=board_tasks, uncompleted_tasks=uncompleted_tasks, result=result, id=board_id, add=0)
+    return render_template('board-page.html', user_data=claims, board_tasks=board_tasks,
+                           uncompleted_tasks=uncompleted_tasks, result=result, id=board_id, add=0)
 
 
 @app.route('/complete_tasks/<int:id>', methods=['POST'])
@@ -379,13 +480,15 @@ def completeTasks(id):
             board_tasks = retrieveTasks(entity)
             uncompleted_tasks = retrieveUncompletedTasks(board_tasks)
             if len(chckbx) != 1:
-                return render_template('board-page.html', user_data=claims, board_tasks=board_tasks, uncompleted_tasks=uncompleted_tasks, result=entity, id=id, add=1)
+                return render_template('board-page.html', user_data=claims, board_tasks=board_tasks,
+                                       uncompleted_tasks=uncompleted_tasks, result=entity, id=id, add=1)
 
             task_key = datastore_client.key('Tasks', int(chckbx[0]))
             task_entity = datastore_client.get(task_key)
 
             if user_info['email'] != task_entity['assigned_user']:
-                return render_template('board-page.html', user_data=claims, board_tasks=board_tasks, uncompleted_tasks=uncompleted_tasks, result=entity,
+                return render_template('board-page.html', user_data=claims, board_tasks=board_tasks,
+                                       uncompleted_tasks=uncompleted_tasks, result=entity,
                                        id=id, add=2)
 
             finishdate = datetime.datetime.now()
@@ -401,7 +504,8 @@ def completeTasks(id):
             uncompleted_tasks = retrieveUncompletedTasks(board_tasks)
         except ValueError as exc:
             error_message = str(exc)
-    return render_template('board-page.html', user_data=claims, board_tasks=board_tasks, uncompleted_tasks=uncompleted_tasks, result=entity, id=id, add=0)
+    return render_template('board-page.html', user_data=claims, board_tasks=board_tasks,
+                           uncompleted_tasks=uncompleted_tasks, result=entity, id=id, add=0)
 
 
 @app.route('/create_board', methods=['POST'])
@@ -446,7 +550,8 @@ def board_page(id):
     board_tasks = retrieveTasks(result)
     uncompleted_tasks = retrieveUncompletedTasks(board_tasks)
     print(board_tasks)
-    return render_template('board-page.html', user_data=claims, board_tasks=board_tasks, uncompleted_tasks=uncompleted_tasks, result=result, id=id, add=0)
+    return render_template('board-page.html', user_data=claims, board_tasks=board_tasks,
+                           uncompleted_tasks=uncompleted_tasks, result=result, id=id, add=0)
 
 
 @app.route('/invite_users/<int:id>', methods=['POST'])
@@ -466,11 +571,15 @@ def inviteUser(id):
             entity = datastore_client.get(entity_key)
             invited_users = entity['invited_users']
 
+            if len(chckbx) == 0:
+                users = retrieve_all_users()
+                return render_template('addUser.html', users=users, user_data=claims, id=id, add=1)
+
             for user in chckbx:
-                    exists = invited_users.count(user)
-                    if exists != 0:
-                        users = retrieve_all_users()
-                        return render_template('addUser.html', users=users, user_data=claims, id=id, add=False)
+                exists = invited_users.count(user)
+                if exists != 0:
+                    users = retrieve_all_users()
+                    return render_template('addUser.html', users=users, user_data=claims, id=id, add=2)
             for user in chckbx:
                 invited_users.append(user)
                 user_key = datastore_client.key('UserInfo', user)
@@ -486,7 +595,8 @@ def inviteUser(id):
             uncompleted_tasks = retrieveUncompletedTasks(board_tasks)
         except ValueError as exc:
             error_message = str(exc)
-    return render_template('board-page.html', user_data=claims, board_tasks=board_tasks, uncompleted_tasks=uncompleted_tasks, result=result, id=id, add=0)
+    return render_template('board-page.html', user_data=claims, board_tasks=board_tasks,
+                           uncompleted_tasks=uncompleted_tasks, result=result, id=id, add=0)
 
 
 if __name__ == '__main__':

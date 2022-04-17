@@ -184,7 +184,7 @@ def root():
             error_message = str(exc)
 
     return render_template('index.html', user_data=claims, user_info=user_info,
-                           boards=boards, error_message=error_message)
+                           boards=boards, error_message=error_message, bool=0)
 
 
 @app.route('/add_board')
@@ -413,6 +413,46 @@ def delete_task(id, board_id):
             error_message = str(exc)
     return render_template('board-page.html', user_data=claims, board_tasks=board_tasks,
                            uncompleted_tasks=uncompleted_tasks, counter_list=counter_list, result=result, id=board_id, add=0)
+
+
+@app.route('/delete_board/<int:id>')
+def delete_board(id):
+    id_token = request.cookies.get("token")
+    error_message = None
+    board_tasks = []
+    user_info = None
+    boards = None
+    if id_token:
+        try:
+            claims = google.oauth2.id_token.verify_firebase_token(id_token,
+                                                                  firebase_request_adapter)
+            user_key = datastore_client.key('UserInfo', claims['email'])
+            user_info = datastore_client.get(user_key)
+
+            entity_key = datastore_client.key('Board', id)
+            entity = datastore_client.get(entity_key)
+
+            boards = retrieveBoard(user_info)
+            invited_users = entity['invited_users']
+            board_tasks = entity['task_list']
+            print(invited_users,"----", board_tasks)
+            if invited_users or board_tasks:
+                return render_template('index.html', user_data=claims, user_info=user_info,
+                                       boards=boards, error_message=error_message, bool=1)
+            else:
+                datastore_client.delete(entity_key)
+                board_list = user_info['board_list']
+                board_list.remove(id)
+                user_info.update({
+                    'board_list': board_list
+                })
+                datastore_client.put(user_info)
+            result = retrieveUserInfo(claims)
+            entity = retrieveBoard(result)
+        except ValueError as exc:
+            error_message = str(exc)
+    return render_template('index.html', user_data=claims, user_info=result,
+                           boards=entity, error_message=error_message, bool=0)
 
 
 @app.route('/edit_task_page/<int:id>/<int:board_id>')

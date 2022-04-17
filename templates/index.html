@@ -19,8 +19,8 @@ filename='style.css') }}">
 
 
 
-     <a id="sign-out" hidden="true">Sign out</a>
-     <a id="sign-in" hidden="false">Sign in</a>
+     <a id="sign-out" hidden="true">SIGN IN</a>
+     <a id="sign-in" hidden="false">SIGN OUT</a>
      {% if user_data %}
         <a id="addboard" href="{{ url_for('createBoardPage')}}">CREATE BOARD</a>
      <p style="float:right;color:#FFFFFF;">Welcome {{user_data.name}}! </p>
@@ -48,7 +48,8 @@ filename='style.css') }}">
                     <div class="card">
                         <div class="fa-check">Board:{{ b.board_name }}</div>
                         <div class="fa-check">Creator:{{ b.creator_name }}</div>
-                        <button type="button" class="btn1" onclick="window.location.href='{{ url_for( 'board_page' , id = b.id) }}'">OPEN BOARD</button>
+                        <button type="button" class="btn1" style="height:24px;width:30px;padding:0px; margin-left:4px; margin-bottom:4px;" onclick="window.location.href='{{ url_for ( 'delete_board' , id = b.id ) }}'"><i style="font-size:21px;" class="material-icons">delete</i></button></td>
+                        <button type="button" class="btn1" style="height:24px;" onclick="window.location.href='{{ url_for( 'board_page' , id = b.id) }}'">OPEN BOARD</button>
                         <br/>
                     </div>
                     {% endif %}
@@ -59,7 +60,7 @@ filename='style.css') }}">
                     <div class="card">
                         Board:{{ b.board_name }}<br/>
                         Creator:{{ b.creator_name }}<br/>
-                        <button type="button" class="btn1" onclick="window.location.href='{{ url_for( 'board_page' , id = b.id) }}'">OPEN BOARD</button>
+                        <button type="button" class="btn1" style="height:24px;" onclick="window.location.href='{{ url_for( 'board_page' , id = b.id) }}'">OPEN BOARD</button>
                         <br/>
                     </div>
                     {% endif %}
@@ -70,7 +71,12 @@ filename='style.css') }}">
         {% endif %}
 
    </div>
-
+    {% if bool==1 %}
+    <div class="alert">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        Please make sure that all tasks and invited users are removed from board before deleting!
+    </div>
+    {% endif %}
 
  <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>
  <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-auth.js"></script>

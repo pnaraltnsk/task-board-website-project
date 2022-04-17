@@ -19,8 +19,8 @@ filename='style.css') }}">
 
 
 
-     <a id="sign-out" hidden="true">SIGN IN</a>
-     <a id="sign-in" hidden="false">SIGN OUT</a>
+     <a id="sign-out" hidden="true">SIGN OUT</a>
+     <a id="sign-in" hidden="false">SIGN IN</a>
      {% if user_data %}
         <a id="addboard" href="{{ url_for('createBoardPage')}}">CREATE BOARD</a>
      <p style="float:right;color:#FFFFFF;">Welcome {{user_data.name}}! </p>

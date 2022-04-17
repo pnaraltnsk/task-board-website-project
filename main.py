@@ -494,7 +494,7 @@ def edit_task(id):
             claims = google.oauth2.id_token.verify_firebase_token(id_token,
                                                                   firebase_request_adapter)
             board_id = int(request.form['board_id'])
-            print(id, "----", board_id)
+
             entity_key = datastore_client.key('Board', board_id)
             entity = datastore_client.get(entity_key)
 
@@ -517,7 +517,7 @@ def edit_task(id):
 
             task_key = datastore_client.key('Tasks', id)
             task = datastore_client.get(task_key)
-            print("tasks before----/n", task)
+
             if chckbx:
                 task.update({
                     'assigned_user': chckbx[0]
@@ -638,7 +638,7 @@ def board_page(id):
         except ValueError as exc:
             error_message = str(exc)
     counter_list = counters(id)
-    print(counter_list)
+
     entity_key = datastore_client.key('Board', id)
     result = datastore_client.get(entity_key)
     board_tasks = retrieveTasks(result)

@@ -42,13 +42,27 @@ filename='style.css') }}">
 
         {% if user_data %}
             {% if boards != None %}
+       <div style="background-color: #515A5A;" class="card">Boards created by you: </div>
                 {% for b in boards %}
+                    {% if user_data.email == b.email %}
+                    <div class="card">
+                        <div class="fa-check">Board:{{ b.board_name }}</div>
+                        <div class="fa-check">Creator:{{ b.creator_name }}</div>
+                        <button type="button" class="btn1" onclick="window.location.href='{{ url_for( 'board_page' , id = b.id) }}'">OPEN BOARD</button>
+                        <br/>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+       <div style="background-color: #515A5A;" class="card">Boards you are participating:</div>
+                {% for b in boards %}
+                    {% if user_data.email != b.email %}
                     <div class="card">
                         Board:{{ b.board_name }}<br/>
                         Creator:{{ b.creator_name }}<br/>
                         <button type="button" class="btn1" onclick="window.location.href='{{ url_for( 'board_page' , id = b.id) }}'">OPEN BOARD</button>
                         <br/>
                     </div>
+                    {% endif %}
                 {% endfor %}
             {% endif %}
         {% elif error_message %}

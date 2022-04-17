@@ -17,43 +17,23 @@
 <body>
  <div class="topnav">
 
-     <a id="sign-in" hidden="false">SIGN IN</a>
-     <a id="sign-out" hidden="true">SIGN OUT</a>
-     <a id="home" href="{{ url_for('home')}}" >HOME</a>
+     <a id="sign-in" hidden="false">Sign in</a>
+     <a id="sign-out" hidden="true">Sign out</a>
  </div>
 
 
-    {%if users!= None %}
- <h3>USER LIST:</h3>
-    <form action="/invite_users/{{id}}" method="post">
-        <table>
-            {% for user in users %}
-                {% if user.email!= user_data.email%}
-                <tr>
+    <div class="centerItems">
+        <form action="/edit_bname/{{board_id}}" method="post">
+         <label class="evform" for="evname"> Name of Board: </label> <input class="evforminput" id="evname" type="text" value="" name="board_name" required/><br/>
 
-                    <td>{{user.name}}</td>
-                    <td>{{user.email}}</td>
-                    <td><input type="checkbox" value={{user.email}} name="checkboxes"></td>
-
-
-                </tr>
-                {% endif %}
-            {% endfor %}
-        </table>
-        <input type="submit" class="btnCompare" value="INVITE">
-    </form>
- {% endif %}
-
-    {% if add==1 %}
-    <div class="alert">
-        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-        Please check at least one checkbox!
+         <input type="submit" class="btnCompare" value="EDIT NAME" name="submit_button"/>
+        </form>
     </div>
-    {% endif %}
-    {% if add==2 %}
+
+    {% if add==False %}
     <div class="alert">
         <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-        Select users that are not already invited!
+        This board name already exists! Try something else.
     </div>
     {% endif %}
 

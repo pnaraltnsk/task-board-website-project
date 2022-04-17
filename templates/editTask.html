@@ -25,8 +25,8 @@
     <div >
         <form action="/edit_task/{{id}}" method="post">
         <table>
-         <tr><td> Task: </td> <td><input class="evforminput" id="evname" type="text" value="" name="name" required/></td></tr>
-         <tr><td>Deadline: </td> <td><input  class="evforminput" id="evdue" type="date" value="" name="deadline" required/></td></tr>
+         <tr><td> Task: </td> <td><input class="evforminput" id="evname" type="text" value="" name="name" /></td></tr>
+         <tr><td>Deadline: </td> <td><input  class="evforminput" id="evdue" type="date" value="" name="deadline" /></td></tr>
             <tr><input type="hidden" id="board_id" name="board_id" value={{board_id}} /></tr>
         </table>
          <table>
@@ -47,7 +47,7 @@
     {% if add==1 %}
     <div class="alert">
         <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-        Please fill in necessary inputs and select only one user!
+        Please select only one user!
     </div>
     {% endif %}
     {% if add==2 %}
